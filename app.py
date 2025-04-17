@@ -29,8 +29,9 @@ def webhook():
 
 def ask_gpt(message):
     try:
-        response = openai.ChatCompletion.create(
-            model="openai/gpt-3.5-turbo",  # หรือ model อื่นที่รองรับ เช่น anthropic/claude-3
+        client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url="https://openrouter.ai/api/v1")
+        response = client.chat.completions.create(
+            model="openchat/openchat-3.5",  # หรือใช้โมเดลอื่นที่คุณเปิดใน OpenRouter
             messages=[
                 {"role": "system", "content": "คุณคือผู้ช่วยอัจฉริยะ"},
                 {"role": "user", "content": message}
@@ -39,7 +40,7 @@ def ask_gpt(message):
         return response.choices[0].message.content
     except Exception as e:
         print("OpenRouter error:", e)
-        return "ขออภัย ระบบไม่สามารถตอบกลับได้ในขณะนี้"
+        return "ขออภัย ตอนนี้ระบบ AI มีปัญหา กรุณาลองใหม่ภายหลัง"
 
 def reply_to_line(reply_token, message):
     headers = {
