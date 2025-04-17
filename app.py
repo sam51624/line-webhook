@@ -4,7 +4,8 @@ import requests
 import os
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.base_url = "https://openrouter.ai/api/v1"
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
 @app.route('/')
@@ -27,17 +28,17 @@ def webhook():
 
 def ask_gpt(message):
     try:
-        chat_completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+        response = openai.ChatCompletion.create(
+            model="openai/gpt-3.5-turbo",  # หรือ model อื่นที่รองรับ เช่น anthropic/claude-3
             messages=[
                 {"role": "system", "content": "คุณคือผู้ช่วยอัจฉริยะ"},
                 {"role": "user", "content": message}
             ]
         )
-        return chat_completion.choices[0].message.content
+        return response.choices[0].message.content
     except Exception as e:
-        print("OpenAI error:", e)
-        return "ขออภัย ระบบมีปัญหาชั่วคราว กรุณาลองใหม่อีกครั้ง"
+        print("OpenRouter error:", e)
+        return "ขออภัย ระบบไม่สามารถตอบกลับได้ในขณะนี้"
 
 def reply_to_line(reply_token, message):
     headers = {
