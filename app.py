@@ -1,10 +1,10 @@
 from flask import Flask, request
-import openai
+from openai import OpenAI
 import requests
 import os
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
 @app.route('/')
@@ -26,14 +26,18 @@ def webhook():
     return "OK", 200
 
 def ask_gpt(message):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "คุณคือผู้ช่วยอัจฉริยะ"},
-            {"role": "user", "content": message}
-        ]
-    )
-    return response["choices"][0]["message"]["content"]
+    try:
+        chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "คุณคือผู้ช่วยอัจฉริยะ"},
+                {"role": "user", "content": message}
+            ]
+        )
+        return chat_completion.choices[0].message.content
+    except Exception as e:
+        print("OpenAI error:", e)
+        return "ขออภัย ระบบมีปัญหาชั่วคราว กรุณาลองใหม่อีกครั้ง"
 
 def reply_to_line(reply_token, message):
     headers = {
