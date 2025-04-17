@@ -27,9 +27,9 @@ def webhook():
 
 def ask_gpt(message):
     try:
-        client = openai.OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            base_url="https://openrouter.ai/api/v1"
+        client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url="https://openrouter.ai/api/v1"
         )
         response = client.chat.completions.create(
             model="anthropic/claude-3-haiku",
