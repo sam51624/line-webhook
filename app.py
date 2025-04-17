@@ -1,11 +1,12 @@
 from flask import Flask, request
-from openai import OpenAI
+import openai
 import requests
 import os
 
 app = Flask(__name__)
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.base_url = "https://openrouter.ai/api/v1"
+openai.base_url = "https://openrouter.ai/api/v1"  # สำคัญสำหรับ OpenRouter
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
 @app.route('/')
