@@ -27,12 +27,12 @@ def webhook():
 
 def ask_gpt(message):
     try:
-        client = OpenAI(
+        client = openai.OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
             base_url="https://openrouter.ai/api/v1"
         )
         response = client.chat.completions.create(
-            model="openchat/openchat-3.5",  # ตรวจสอบว่าเปิดใช้งานแล้วใน https://openrouter.ai/explore
+            model="anthropic/claude-3-haiku",
             messages=[
                 {"role": "system", "content": "คุณคือผู้ช่วยอัจฉริยะ"},
                 {"role": "user", "content": message}
@@ -42,6 +42,7 @@ def ask_gpt(message):
     except Exception as e:
         print("OpenRouter error:", e)
         return "ขออภัย ตอนนี้ระบบ AI มีปัญหา กรุณาลองใหม่ภายหลัง"
+
 
 
 def reply_to_line(reply_token, message):
